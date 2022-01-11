@@ -1,0 +1,33 @@
+.container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(71, 71, 92);
+
+    h1 {
+        margin-bottom: 16px;
+        color: #33dd33;
+    }
+
+    input {
+        background-color: #dfdfdf;
+        border: none;
+        margin-bottom: 16px;
+        padding: 8px;
+        width: 16rem;
+    }
+
+    button {
+        padding: 8px;
+        width: 16rem;
+        background-color: #33dd33;
+        font-weight: bold;
+        border: none;
+
+        &:hover {
+            background-color: #33cc33;
+        }
+    }
+}
