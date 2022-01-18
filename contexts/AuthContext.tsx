@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import Router from "next/router"
 import { api } from "../services/api";
 import { setCookie, parseCookies } from 'nookies'
+import { signOut } from "../functions/signOut";
 
 type User = {
     email: string
@@ -37,6 +38,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
             api.get('/me').then(response => {
                 const { email, permissions, roles } = response.data
                 setUser({ email, permissions, roles })
+            }).catch(() => {
+                signOut()
             })
         }
     }, [])
