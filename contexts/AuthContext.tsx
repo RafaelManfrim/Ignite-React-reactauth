@@ -64,7 +64,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
             Router.push('/dashboard')
         } catch {
-            alert("Houve um erro ao logar")
+            alert("Houve um erro ao logar, por favor tente mais tarde")
         }
     }
 
