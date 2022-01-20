@@ -19,6 +19,7 @@ api.interceptors.response.use(response => {
     if(error.response?.status === 401) {
         if(error.response.data?.code === 'token.expired') {
             cookies = parseCookies()
+
             const { 'nextauth.refreshToken': refreshToken } = cookies
             const originalConfig = error.config
 
@@ -26,9 +27,9 @@ api.interceptors.response.use(response => {
                 isRefreshing = true
 
                 api.post('/refresh/', { refreshToken }).then(response => {
-                    const newToken = response.data.token
+                    const { token } = response.data
 
-                    setCookie(undefined, 'nextauth.token', newToken, {
+                    setCookie(undefined, 'nextauth.token', token, {
                         maxAge: 24 * 60 * 60 * 7,
                         path: '/'
                     })
@@ -37,13 +38,13 @@ api.interceptors.response.use(response => {
                         path: '/'
                     })
     
-                    api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`
+                    api.defaults.headers['Authorization'] = `Bearer ${token}`
 
-                    failedRequestsQueue.forEach(req => req.resolve(newToken))
+                    failedRequestsQueue.forEach(req => req.onSuccess(token))
                     failedRequestsQueue = []
 
                 }).catch(err => {
-                    failedRequestsQueue.forEach(req => req.reject(err))
+                    failedRequestsQueue.forEach(req => req.onFailure(err))
                     failedRequestsQueue = []
 
                 }).finally(() => {
@@ -53,13 +54,14 @@ api.interceptors.response.use(response => {
 
             return new Promise((resolve, reject) => {
                 failedRequestsQueue.push({
-                    resolve: (token: string) => {
+                    onSuccess: (token: string) => {
                         if(originalConfig.headers) {
                             originalConfig.headers['Authorization'] = `Bearer ${token}`
+                            
                             resolve(api(originalConfig))
                         }
                     },
-                    reject: (err: AxiosError) => {
+                    onFailure: (err: AxiosError) => {
                         reject(err)
                     }
                 })

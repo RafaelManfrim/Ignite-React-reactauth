@@ -1,4 +1,4 @@
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import { FormEvent, useState } from 'react'
 import styles from '../styles/Home.module.scss'
 import { useAuth } from '../contexts/AuthContext'
@@ -22,6 +22,16 @@ const Home: NextPage = () => {
       <button type="submit">Entrar</button>
     </form>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  console.log(ctx.req.cookies)
+
+  return {
+    props: {
+
+    }
+  }
 }
 
 export default Home

@@ -60,7 +60,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
             setUser({ email, permissions, roles })
 
-            api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+            api.defaults.headers['Authorization'] = `Bearer ${token}`
 
             Router.push('/dashboard')
         } catch {
