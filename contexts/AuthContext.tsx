@@ -27,9 +27,24 @@ interface AuthContextProviderProps {
 
 const AuthContext = createContext({} as AuthContextData)
 
+export let authChannel: BroadcastChannel
+
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
     const [user, setUser] = useState<User>()
     const isAuthenticated = !!user
+
+    useEffect(() => {
+        authChannel = new BroadcastChannel('auth')
+        authChannel.onmessage = (message) => {
+            switch(message.data){
+                case "signOut":
+                    signOut()
+                    break
+                default:
+                    break
+            }
+        }
+    }, [])
 
     useEffect(() => {
         const { 'nextauth.token': token } = parseCookies()

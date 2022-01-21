@@ -1,13 +1,12 @@
 import { useEffect } from "react"
 import { Can } from "../components/Can"
 import { useAuth } from "../contexts/AuthContext"
-import { signOut } from "../functions/signOut"
 import { withSSRAuth } from "../functions/withSSRAuth"
 import { useCan } from "../hooks/useCan"
 import { setupApiClient } from "../services/api"
 import { api } from "../services/apiClient"
 
-export default function Dashboard() {
+export default function Metrics() {
     const { user } = useAuth()
     const userCanSeeMetrics = useCan({
         permissions: ['metrics.list']
@@ -19,15 +18,7 @@ export default function Dashboard() {
 
     return (
         <main>
-            <h1>Dashboard</h1>
-            <h2>{user?.email}</h2>
-            <button onClick={signOut}>Sign out</button>
-
-            {userCanSeeMetrics && <div>Métricas</div>}
-
-            <Can permissions={['metrics.list']}>
-                <h4>Dados</h4>
-            </Can>
+            <h1>MÉTRICAS</h1>
         </main>
     )
 }
@@ -39,4 +30,7 @@ export const getServerSideProps = withSSRAuth(async (ctx) => {
     return {
         props: {}
     }
+}, {
+    permissions: ['metrics.list'],
+    roles: ['administrator']
 })
